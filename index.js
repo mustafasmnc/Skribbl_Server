@@ -14,7 +14,7 @@ app.use(express.json());
 
 app.get('/', (req, res) => {
     res.send("Node Server is running. Yay!!")
- })
+})
 
 //connect to DB 
 const DB = 'mongodb+srv://smnc:smnc@cluster0.3ft7a.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
@@ -28,6 +28,7 @@ mongoose.connect(DB).then(() => {
 const socketio = require('socket.io')(http)
 
 socketio.on("connection", (userSocket) => {
+    console.log('a user is connected')
     userSocket.on("send_message", (data) => {
         userSocket.broadcast.emit("receive_message", data)
     })
