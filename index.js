@@ -15,7 +15,7 @@ var io = require('socket.io')(server);
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.send("Node Server is running. Yay!!")
+    res.send("Node Server is running. Yay!!!")
 })
 
 //connect to DB 
