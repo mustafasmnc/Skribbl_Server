@@ -5,6 +5,8 @@ const port = process.env.PORT || 3000;
 var server = http.createServer(app);
 const mongoose = require('mongoose');
 
+const socketIO=require('socket.io');
+
 // var socket=require('socket.io');
 // var io=socket(server);
 var io = require('socket.io')(server);
