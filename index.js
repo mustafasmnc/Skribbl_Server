@@ -27,10 +27,12 @@ mongoose.connect(DB).then(() => {
 
 const socketio = require('socket.io')(http)
 
-socketio.on("connection", (userSocket) => {
-    console.log('a user is connected')
-    userSocket.on("send_message", (data) => {
-        userSocket.broadcast.emit("receive_message", data)
+socketio.on('connection', (client) => {
+    console.log('a user connected')
+
+    client.on('toServer', (data) => {
+        console.log('Message received --> ', data)
+        client.emit('fromServer', 'fromServer -> ' + data);
     })
 })
 
