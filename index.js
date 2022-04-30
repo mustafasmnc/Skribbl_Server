@@ -1,85 +1,133 @@
-// const express = require('express');
-// var http = require('http');
-// const app = express();
-// const port = process.env.PORT || 3000;
-// var server = http.createServer(app);
-// const mongoose = require('mongoose');
-
-// const socketIO=require('socket.io');
-
-// // var socket=require('socket.io');
-// // var io=socket(server);
-// var io = require('socket.io')(server);
-
-// //middleware
-// app.use(express.json());
-
-// app.get('/', (req, res) => {
-//     res.send("Node Server is running. Yay!!!")
-// })
-
-// //connect to DB 
-// const DB = 'mongodb+srv://smnc:smnc@cluster0.3ft7a.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
-
-// mongoose.connect(DB).then(() => {
-//     console.log('Connection Succesful')
-// }).catch((e) => {
-//     console.log(e)
-// })
-
-// const socketio = require('socket.io')(http)
-
-// socketio.on('connection', (client) => {
-//     console.log('a user connected')
-
-//     client.on('toServer', (data) => {
-//         console.log('Message received --> ', data)
-//         client.emit('fromServer', 'fromServer -> ' + data);
-//     })
-// })
-
-// // io.on('connection', function (socket) {
-// //     console.log(socket.id, 'joined');
-// //     socket.on('/test', function (msg) {
-// //         console.log(msg);
-// //     });
-// // });
-
-// app.listen(port, "0.0.0.0", () => {
-//     console.log(`Server running at ${port}`)
-// })
-
 const express = require('express')
 const app = express()
 const serverr = require('http').createServer()
+const mongoose = require('mongoose');
+require('dotenv').config()
+const Room = require('./models/Room')
+const getWord = require('./api/getWord')
+
 const PORT = process.env.PORT || 4000
 const server = app.listen(PORT, () => {
     console.log(`server is started on ${PORT}`)
 })
 
+//middleware
+app.use(express.json());
+
 app.get('/', (req, res) => {
     res.send("Node Server is running. Yay!!!")
 })
 
+//connect to DB 
+const DB = process.env.MONGO_DB; //Mongo db link
+
+mongoose.connect(DB).then(() => {
+    console.log('Connection Succesful')
+}).catch((e) => {
+    console.log(e)
+})
+
 const io = require('socket.io')(server)
 
-const connectedUser = new Set();
-
 io.on('connection', (socket) => {
-    console.log('Connected SocketIO Successfully', socket.id)
+    //console.log('connected to socketio')
 
-    connectedUser.add(socket.id)
-    io.emit('connected-user', connectedUser.size)
+    //Create game
+    socket.on('create-game', async ({ nickname, name, occupancy, maxRounds }) => {
+        //console.log('create-game')
+        try {
+            const existingRoom = await Room.findOne({ name })
+            if (existingRoom) {
+                socket.emit('notCorrectGame', 'Room with that name already exists!')
+                return;
+            }
+            let room = new Room()
+            const word = getWord()
+            room.word = word
+            room.name = name
+            room.occupancy = occupancy
+            room.maxRounds = maxRounds
 
-    socket.on('disconnect', () => {
-        console.log('Disconnected SocketIO', socket.id)
-        connectedUser.delete(socket.id)
-        io.emit('connected-user', connectedUser.size)
+            let player = {
+                socketId: socket.id,
+                nickname,
+                isPartyLeader: true
+            }
+            room.players.push(player)
+            room = await room.save()
+            socket.join(name)
+            // console.log("create game Room:" + room)
+            // console.log('create game Name:' + name)
+            io.to(name).emit('updateRoom', room)
+        } catch (err) {
+            console.log(`Error while creating room ${err}`)
+        }
     })
 
-    socket.on('message', (data) => {
-        console.log(data)
-        //io.emit('message', data)
-        socket.emit('message-receive', data)
+    //join game
+    socket.on('join-game', async ({ nickname, name }) => {
+        //console.log('join-game')
+        try {
+            let room = await Room.findOne({ name })
+            if (!room) {
+                console.log('Room with that name is not exists!')
+                socket.emit('notCorrectGame', 'Room with that name is not exists!')
+                return
+            }
+            if (room.isJoin) {
+                let player = {
+                    socketId: socket.id,
+                    nickname
+                }
+                room.players.push(player)
+                socket.join(name)
+
+                if (room.players.length === room.occupancy) {
+                    room.isJoin = false
+                }
+                room.turn = room.players[room.turnIndex]
+                room = await room.save()
+                // console.log("join game Room:" + room)
+                // console.log('join game Name:' + name)
+                io.to(name).emit('updateRoom', room)
+            } else {
+                console.log('The game is in progress, please try later')
+                socket.emit('notCorrectGame', 'The game is in progress, please try later')
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    })
+
+    //chat socket
+    socket.on('msg', async (data) => {
+        try {
+            io.to(data.roomName).emit('msg', {
+                username: data.username,
+                msg: data.msg,
+            })
+        } catch (err) {
+            console.log(err.toString())
+        }
+    })
+
+    // White board sockets
+    socket.on('paint', ({ details, roomName }) => {
+        io.to(roomName).emit('points', { details: details });
+    })
+
+    // Color socket
+    socket.on('color-change', ({ color, roomName }) => {
+        io.to(roomName).emit('color-change', color);
+    })
+
+    // Stroke Socket
+    socket.on('stroke-width', ({ value, roomName }) => {
+        io.to(roomName).emit('stroke-width', value)
+    })
+
+    // Clear screen
+    socket.on('clean-screen', (roomName) => {
+        io.to(roomName).emit('clear-screen', '')
     })
 })
