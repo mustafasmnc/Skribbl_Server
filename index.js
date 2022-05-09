@@ -6,6 +6,9 @@ require('dotenv').config()
 const Room = require('./models/Room')
 const getWord = require('./api/getWord')
 
+//Route
+const roomRoute = require('./api/room')
+
 const PORT = process.env.PORT || 4000
 const server = app.listen(PORT, () => {
     console.log(`server is started on ${PORT}`)
@@ -17,6 +20,8 @@ app.use(express.json());
 app.get('/', (req, res) => {
     res.send("Node Server is running. Yay!!!")
 })
+
+app.use('/api/room', roomRoute)
 
 //connect to DB 
 const DB = process.env.MONGO_DB; //Mongo db link
@@ -38,7 +43,7 @@ io.on('connection', (socket) => {
         try {
             const existingRoom = await Room.findOne({ name })
             if (existingRoom) {
-                socket.emit('notCorrectGame', 'Room with that name already exists!')
+                socket.emit('not-correct-game', 'Room with that name already exists!')
                 return;
             }
             let room = new Room()
@@ -116,6 +121,7 @@ io.on('connection', (socket) => {
                     msg: 'guessed it',
                     guessedUserCtr: data.guessedUserCtr + 1,
                 })
+                socket.emit('close-input', '')
             } else {
                 io.to(data.roomName).emit('msg', {
                     username: data.username,
@@ -147,6 +153,15 @@ io.on('connection', (socket) => {
                 //show the leaderboard
             }
         } catch (error) {
+            console.log(err)
+        }
+    })
+
+    socket.on('update-score', async (name) => {
+        try {
+            const room = await Room.findOne({ name })
+            io.to(name).emit('update-score', room)
+        } catch (err) {
             console.log(err)
         }
     })
