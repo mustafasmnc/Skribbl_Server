@@ -138,28 +138,50 @@ io.on('connection', (socket) => {
     socket.on('change-turn', async (name) => {
         try {
             let room = await Room.findOne({ name })
-            let index = room.turnIndex;
-            if (index + 1 === room.players.length) {
+            let idx = room.turnIndex
+            if (idx + 1 === room.players.length) {
                 room.currentRound += 1
             }
             if (room.currentRound <= room.maxRounds) {
-                // if (room.currentRound === room.maxRounds && (room.turnIndex + 1) === room.players.length) {
-                //     io.to(room.name).emit('show-leaderboard', room.players)
-                // }
                 const word = getWord()
                 room.word = word
-                room.turnIndex = (index + 1) % room.players.length
+                room.turnIndex = (idx + 1) % room.players.length
                 room.turn = room.players[room.turnIndex]
-                room = await room.save()
+                room = await room.save();
                 io.to(name).emit('change-turn', room)
             } else {
-                //show the leaderboard
                 io.to(name).emit('show-leaderboard', room.players)
             }
-        } catch (error) {
+        } catch (err) {
             console.log(err)
         }
     })
+
+    // socket.on('change-turn', async (name) => {
+    //     try {
+    //         let room = await Room.findOne({ name })
+    //         let index = room.turnIndex;
+    //         if (index + 1 === room.players.length) {
+    //             room.currentRound += 1
+    //         }
+    //         if (room.currentRound <= room.maxRounds) {
+    //             // if (room.currentRound === room.maxRounds && (room.turnIndex + 1) === room.players.length) {
+    //             //     io.to(room.name).emit('show-leaderboard', room.players)
+    //             // }
+    //             const word = getWord()
+    //             room.word = word
+    //             room.turnIndex = (index + 1) % room.players.length
+    //             room.turn = room.players[room.turnIndex]
+    //             room = await room.save()
+    //             io.to(name).emit('change-turn', room)
+    //         } else {
+    //             //show the leaderboard
+    //             io.to(name).emit('show-leaderboard', room.players)
+    //         }
+    //     } catch (error) {
+    //         console.log(err)
+    //     }
+    // })
 
     socket.on('update-score', async (name) => {
         try {
