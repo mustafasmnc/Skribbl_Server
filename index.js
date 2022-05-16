@@ -18,7 +18,7 @@ const server = app.listen(PORT, () => {
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.send("Node Server is running. Yay!!!")
+    res.send("Node Server is running. Yay!!!!")
 })
 
 app.use('/api/room', roomRoute)
