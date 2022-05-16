@@ -144,7 +144,7 @@ io.on('connection', (socket) => {
             }
             if (room.currentRound <= room.maxRounds) {
                 if (room.currentRound === room.maxRounds && (room.turnIndex + 1) === room.players.length) {
-                    socket.broadcast.to(room.name).emit('show-leaderboard', room.players)
+                    io.to(room.name).emit('show-leaderboard', room.players)
                 }
                 const word = getWord()
                 room.word = word
@@ -154,6 +154,7 @@ io.on('connection', (socket) => {
                 io.to(name).emit('change-turn', room)
             } else {
                 //show the leaderboard
+                io.to(room.name).emit('show-leaderboard', room.players)
             }
         } catch (error) {
             console.log(err)
