@@ -196,9 +196,10 @@ io.on('connection', (socket) => {
                     break
                 }
             }
+            room.isJoin = true
             room = await room.save()
             if (room.players.length < 1) {
-                const deleteRoom = await Room.deleteOne({name: room['name'] });
+                const deleteRoom = await Room.deleteOne({ name: room['name'] });
                 //console.log(deleteRoom)
                 if (deleteRoom['deletedCount'] == 1) {
                     console.log('Room deleted')
