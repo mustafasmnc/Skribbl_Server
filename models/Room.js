@@ -35,6 +35,10 @@ const roomSchema = new mongoose.Schema({
     turnIndex: {
         type: Number,
         default: 0
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
 })
 

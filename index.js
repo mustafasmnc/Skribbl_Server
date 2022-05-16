@@ -76,7 +76,7 @@ io.on('connection', (socket) => {
             let room = await Room.findOne({ name })
             if (!room) {
                 console.log('Room with that name is not exists!')
-                socket.emit('notCorrectGame', 'Room with that name is not exists!')
+                socket.emit('not-correct-game', 'Room with that name is not exists!')
                 return
             }
             if (room.isJoin) {
@@ -151,6 +151,7 @@ io.on('connection', (socket) => {
                 io.to(name).emit('change-turn', room)
             } else {
                 //show the leaderboard
+                io.to(name).emit('show-leaderboard', room.players)
             }
         } catch (error) {
             console.log(err)
@@ -184,5 +185,36 @@ io.on('connection', (socket) => {
     // Clear screen
     socket.on('clean-screen', (roomName) => {
         io.to(roomName).emit('clear-screen', '')
+    })
+
+    socket.on('disconnect', async () => {
+        try {
+            let room = await Room.findOne({ "players.socketId": socket.id })
+            for (let i = 0; i < room.players.length; i++) {
+                if (room.players[i].socketId === socket.id) {
+                    room.players.splice(i, 1)
+                    break
+                }
+            }
+            room = await room.save()
+            if (room.players.length < 1) {
+                const deleteRoom = await Room.deleteOne({name: room['name'] });
+                //console.log(deleteRoom)
+                if (deleteRoom['deletedCount'] == 1) {
+                    console.log('Room deleted')
+                    //res.status(200).json({ success: true, msg: 'room deleted' })
+                } else {
+                    console.log('Room not deleted')
+                    //res.status(409).json({ success: false, msg: 'room not deleted' })
+                }
+            }
+            if (room.players.length === 1) {
+                socket.broadcast.to(room.name).emit('show-leaderboard', room.players)
+            } else {
+                socket.broadcast.to(room.name).emit('user-disconnected', room)
+            }
+        } catch (err) {
+            console.log(err)
+        }
     })
 })
