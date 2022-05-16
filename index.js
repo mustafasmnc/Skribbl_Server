@@ -143,9 +143,9 @@ io.on('connection', (socket) => {
                 room.currentRound += 1
             }
             if (room.currentRound <= room.maxRounds) {
-                if (room.currentRound === room.maxRounds && (room.turnIndex + 1) === room.players.length) {
-                    io.to(room.name).emit('show-leaderboard', room.players)
-                }
+                // if (room.currentRound === room.maxRounds && (room.turnIndex + 1) === room.players.length) {
+                //     io.to(room.name).emit('show-leaderboard', room.players)
+                // }
                 const word = getWord()
                 room.word = word
                 room.turnIndex = (index + 1) % room.players.length
