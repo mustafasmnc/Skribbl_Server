@@ -139,7 +139,7 @@ io.on('connection', (socket) => {
         try {
             let room = await Room.findOne({ name })
             let index = room.turnIndex;
-            if (index + 1 == room.players.length) {
+            if (index + 1 === room.players.length) {
                 room.currentRound += 1
             }
             if (room.currentRound <= room.maxRounds) {
@@ -154,7 +154,7 @@ io.on('connection', (socket) => {
                 io.to(name).emit('change-turn', room)
             } else {
                 //show the leaderboard
-                io.to(room.name).emit('show-leaderboard', room.players)
+                io.to(name).emit('show-leaderboard', room.players)
             }
         } catch (error) {
             console.log(err)
