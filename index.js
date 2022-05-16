@@ -142,14 +142,14 @@ io.on('connection', (socket) => {
             if (index + 1 == room.players.length) {
                 room.currentRound += 1
             }
-            if (room.currentRound <= room.maxRounds) {
+            if (room.currentRound < (room.maxRounds + 1)) {
                 const word = getWord()
                 room.word = word
                 room.turnIndex = (index + 1) % room.players.length
                 room.turn = room.players[room.turnIndex]
                 room = await room.save()
                 io.to(name).emit('change-turn', room)
-            } else {
+            } if (room.currentRound == room.maxRounds) {
                 //show the leaderboard
                 io.to(name).emit('show-leaderboard', room.players)
             }
