@@ -53,16 +53,16 @@ io.on('connection', (socket) => {
             let room = new Room()
             //const word = getWord()
             const word = ''
-            if (level == 'easy') {
+            if (level == 'Easy') {
                 word = getWordEasy()
             }
-            if (level == 'medium') {
+            if (level == 'Medium') {
                 word = getWordMedium()
             }
-            if (level == 'hard') {
+            if (level == 'Hard') {
                 word = getWordHard()
             }
-            if (level == 'difficult') {
+            if (level == 'Difficult') {
                 word = getWordDifficult()
             }
             room.word = word
