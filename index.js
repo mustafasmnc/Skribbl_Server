@@ -163,19 +163,18 @@ io.on('connection', (socket) => {
             if (room.currentRound <= room.maxRounds) {
                 //const word = getWord()
                 var word = ''
-                if (level == 'Easy') {
+                if (room.level == 'Easy') {
                     word = getWordEasy()
                 }
-                if (level == 'Medium') {
+                if (room.level == 'Medium') {
                     word = getWordMedium()
                 }
-                if (level == 'Hard') {
+                if (room.level == 'Hard') {
                     word = getWordHard()
                 }
-                if (level == 'Difficult') {
+                if (room.level == 'Difficult') {
                     word = getWordDifficult()
                 }
-                room.level = level
                 room.word = word
                 room.turnIndex = (idx + 1) % room.players.length
                 room.turn = room.players[room.turnIndex]
