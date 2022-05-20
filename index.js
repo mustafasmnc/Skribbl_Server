@@ -65,6 +65,7 @@ io.on('connection', (socket) => {
             if (level == 'Difficult') {
                 word = getWordDifficult()
             }
+            room.level = level
             room.word = word
             room.name = name
             room.occupancy = occupancy
@@ -174,6 +175,7 @@ io.on('connection', (socket) => {
                 if (level == 'Difficult') {
                     word = getWordDifficult()
                 }
+                room.level = level
                 room.word = word
                 room.turnIndex = (idx + 1) % room.players.length
                 room.turn = room.players[room.turnIndex]

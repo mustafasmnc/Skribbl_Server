@@ -26,6 +26,10 @@ const roomSchema = new mongoose.Schema({
         type: Number,
         default: 1
     },
+    level: {
+        required: true,
+        type: String
+    },
     players: [playerSchema],
     isJoin: {
         type: Boolean,
