@@ -4,7 +4,11 @@ const serverr = require('http').createServer()
 const mongoose = require('mongoose');
 require('dotenv').config()
 const Room = require('./models/Room')
-const getWord = require('./api/getWord')
+//const getWord = require('./api/getWord')
+const getWordEasy = require('./api/getWordEasy')
+const getWordMedium = require('./api/getWordMedium')
+const getWordHard = require('./api/getWordHard')
+const getWordDifficult = require('./api/getWordDifficult')
 
 //Route
 const roomRoute = require('./api/room')
@@ -38,7 +42,7 @@ io.on('connection', (socket) => {
     //console.log('connected to socketio')
 
     //Create game
-    socket.on('create-game', async ({ nickname, name, occupancy, maxRounds }) => {
+    socket.on('create-game', async ({ nickname, name, occupancy, maxRounds, level }) => {
         //console.log('create-game')
         try {
             const existingRoom = await Room.findOne({ name })
@@ -47,7 +51,20 @@ io.on('connection', (socket) => {
                 return;
             }
             let room = new Room()
-            const word = getWord()
+            //const word = getWord()
+            const word = ''
+            if (level == 'easy') {
+                word = getWordEasy()
+            }
+            if (level == 'medium') {
+                word = getWordMedium()
+            }
+            if (level == 'hard') {
+                word = getWordHard()
+            }
+            if (level == 'difficult') {
+                word = getWordDifficult()
+            }
             room.word = word
             room.name = name
             room.occupancy = occupancy
