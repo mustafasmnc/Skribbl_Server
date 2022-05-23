@@ -131,11 +131,12 @@ io.on('connection', (socket) => {
                     (player) => player.socketId == data.socketId
                 )
                 //let userPlayer =await room.players.find({ nickname: data.username })
-                console.log("socket:msg:data:roomName: " + data.roomName)
-                console.log("socket:msg:data:msg: " + data.msg)
-                console.log("socket:msg:data:word: " + data.word)
-                console.log("socket:msg:room: " + room[0])
-                console.log("socket:msg:userPlayer: " + userPlayer[0])
+                // console.log("socket:msg:data:roomName: " + data.roomName)
+                // console.log("socket:msg:data:msg: " + data.msg)
+                // console.log("socket:msg:data:word: " + data.word)
+                // console.log("socket:msg:data:socket: " + data.socketId)
+                // console.log("socket:msg:room: " + room[0])
+                // console.log("socket:msg:userPlayer: " + userPlayer[0])
                 if (data.timeTaken !== 0) {
                     userPlayer[0].points += Math.round((200 / data.timeTaken) * 10)
                 }
