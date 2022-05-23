@@ -130,6 +130,7 @@ io.on('connection', (socket) => {
                 let userPlayer = room[0].players.filter(
                     (player) => player.nickname === data.username
                 )
+                console.log("socket:msg:userPlayer: "+userPlayer)
                 if (data.timeTaken !== 0) {
                     userPlayer[0].points += Math.round((200 / data.timeTaken) * 10)
                 }
