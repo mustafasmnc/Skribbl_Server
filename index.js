@@ -130,7 +130,7 @@ io.on('connection', (socket) => {
                 // let userPlayer = room[0].players.filter(
                 //     (player) => player.nickname === data.username
                 // )
-                let userPlayer = room[0].players.find({ nickname: data.username })
+                let userPlayer =await room[0].players.find({ nickname: data.username })
                 console.log("socket:msg:data: " + data.username)
                 console.log("socket:msg:room: " + room[0])
                 console.log("socket:msg:userPlayer: " + userPlayer)
