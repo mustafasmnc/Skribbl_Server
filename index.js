@@ -135,7 +135,7 @@ io.on('connection', (socket) => {
                 console.log("socket:msg:room: " + room[0])
                 console.log("socket:msg:userPlayer: " + userPlayer)
                 if (data.timeTaken !== 0) {
-                    userPlayer[0].points += Math.round((200 / data.timeTaken) * 10)
+                    userPlayer.points += Math.round((200 / data.timeTaken) * 10)
                 }
                 room = await room[0].save()
                 io.to(data.roomName).emit('msg', {
