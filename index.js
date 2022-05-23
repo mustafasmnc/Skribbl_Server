@@ -127,15 +127,15 @@ io.on('connection', (socket) => {
         try {
             if (data.msg === data.word) {
                 let room = await Room.find({ name: data.roomName })
-                // let userPlayer = room[0].players.filter(
-                //     (player) => player.nickname === data.username
-                // )
-                let userPlayer =await room[0].players.find({ nickname: data.username })
+                let userPlayer = await room[0].players.filter(
+                    (player) => player.nickname === data.username
+                )
+                //let userPlayer =await room.players.find({ nickname: data.username })
                 console.log("socket:msg:data: " + data.username)
                 console.log("socket:msg:room: " + room[0])
-                console.log("socket:msg:userPlayer: " + userPlayer)
+                console.log("socket:msg:userPlayer: " + userPlayer[0])
                 if (data.timeTaken !== 0) {
-                    userPlayer.points += Math.round((200 / data.timeTaken) * 10)
+                    userPlayer[0].points += Math.round((200 / data.timeTaken) * 10)
                 }
                 room = await room[0].save()
                 io.to(data.roomName).emit('msg', {
