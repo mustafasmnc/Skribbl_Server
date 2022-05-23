@@ -127,12 +127,13 @@ io.on('connection', (socket) => {
         try {
             if (data.msg === data.word) {
                 let room = await Room.find({ name: data.roomName })
-                let userPlayer = room[0].players.filter(
-                    (player) => player.nickname === data.username
-                )
-                console.log("socket:msg:data: "+data.username)
-                console.log("socket:msg:room: "+room[0])
-                console.log("socket:msg:userPlayer: "+userPlayer[0])
+                // let userPlayer = room[0].players.filter(
+                //     (player) => player.nickname === data.username
+                // )
+                let userPlayer = room[0].players.find({ nickname: data.username })
+                console.log("socket:msg:data: " + data.username)
+                console.log("socket:msg:room: " + room[0])
+                console.log("socket:msg:userPlayer: " + userPlayer)
                 if (data.timeTaken !== 0) {
                     userPlayer[0].points += Math.round((200 / data.timeTaken) * 10)
                 }
@@ -152,7 +153,7 @@ io.on('connection', (socket) => {
             }
 
         } catch (err) {
-            console.log("socket:msg:error: "+err.toString())
+            console.log("socket:msg:error: " + err.toString())
         }
     })
 
