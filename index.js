@@ -131,7 +131,7 @@ io.on('connection', (socket) => {
                     (player) => player.socketId == data.socketId
                 )
                 //let userPlayer =await room.players.find({ nickname: data.username })
-                console.log("socket:msg:data:socketId: " + data.socketId)
+                console.log("socket:msg:data: " + data[0])
                 console.log("socket:msg:room: " + room[0])
                 console.log("socket:msg:userPlayer: " + userPlayer[0])
                 if (data.timeTaken !== 0) {
