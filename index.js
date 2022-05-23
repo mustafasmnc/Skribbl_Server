@@ -128,10 +128,10 @@ io.on('connection', (socket) => {
             if (data.msg === data.word) {
                 let room = await Room.find({ name: data.roomName })
                 let userPlayer = await room[0].players.filter(
-                    (player) => player.nickname === data.username
+                    (player) => player.socketId === data.socketId
                 )
                 //let userPlayer =await room.players.find({ nickname: data.username })
-                console.log("socket:msg:data: " + data.username)
+                console.log("socket:msg:data:socketId: " + data.socketId)
                 console.log("socket:msg:room: " + room[0])
                 console.log("socket:msg:userPlayer: " + userPlayer[0])
                 if (data.timeTaken !== 0) {
