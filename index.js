@@ -131,7 +131,9 @@ io.on('connection', (socket) => {
                     (player) => player.socketId == data.socketId
                 )
                 //let userPlayer =await room.players.find({ nickname: data.username })
-                console.log("socket:msg:data: " + data[0])
+                console.log("socket:msg:data:roomName: " + data.roomName)
+                console.log("socket:msg:data:msg: " + data.msg)
+                console.log("socket:msg:data:word: " + data.word)
                 console.log("socket:msg:room: " + room[0])
                 console.log("socket:msg:userPlayer: " + userPlayer[0])
                 if (data.timeTaken !== 0) {
@@ -140,7 +142,7 @@ io.on('connection', (socket) => {
                 room = await room[0].save()
                 io.to(data.roomName).emit('msg', {
                     username: data.username,
-                    socketId:socket.id,
+                    socketId: socket.id,
                     msg: 'guessed it',
                     guessedUserCtr: data.guessedUserCtr + 1,
                 })
@@ -148,7 +150,7 @@ io.on('connection', (socket) => {
             } else {
                 io.to(data.roomName).emit('msg', {
                     username: data.username,
-                    socketId:socket.id,
+                    socketId: socket.id,
                     msg: data.msg,
                     guessedUserCtr: data.guessedUserCtr,
                 })
