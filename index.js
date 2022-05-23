@@ -140,6 +140,7 @@ io.on('connection', (socket) => {
                 room = await room[0].save()
                 io.to(data.roomName).emit('msg', {
                     username: data.username,
+                    socketId:socket.id,
                     msg: 'guessed it',
                     guessedUserCtr: data.guessedUserCtr + 1,
                 })
@@ -147,6 +148,7 @@ io.on('connection', (socket) => {
             } else {
                 io.to(data.roomName).emit('msg', {
                     username: data.username,
+                    socketId:socket.id,
                     msg: data.msg,
                     guessedUserCtr: data.guessedUserCtr,
                 })
