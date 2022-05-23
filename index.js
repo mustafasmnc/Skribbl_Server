@@ -149,7 +149,7 @@ io.on('connection', (socket) => {
             }
 
         } catch (err) {
-            console.log(err.toString())
+            console.log("socket:msg:error: "+err.toString())
         }
     })
 
