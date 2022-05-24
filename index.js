@@ -82,6 +82,7 @@ io.on('connection', (socket) => {
             // console.log("create game Room:" + room)
             // console.log('create game Name:' + name)
             io.to(name).emit('updateRoom', room)
+            io.to(name).emit('userSocketId', socket.id)
         } catch (err) {
             console.log(`Error while creating room ${err}`)
         }
@@ -112,6 +113,7 @@ io.on('connection', (socket) => {
                 room = await room.save()
                 // console.log("join game Room:" + room)
                 // console.log('join game Name:' + name)
+                io.to(name).emit('userSocketId', socket.id)
                 io.to(name).emit('updateRoom', room)
             } else {
                 console.log('The game is in progress, please try later')
@@ -134,9 +136,9 @@ io.on('connection', (socket) => {
                 // console.log("socket:msg:data:roomName: " + data.roomName)
                 // console.log("socket:msg:data:msg: " + data.msg)
                 // console.log("socket:msg:data:word: " + data.word)
-                 console.log("socket:msg:data:socketId: " + data.socketId)
-                 console.log("socket:msg:room: " + room[0])
-                 console.log("socket:msg:userPlayer: " + userPlayer[0])
+                console.log("socket:msg:data:socketId: " + data.socketId)
+                console.log("socket:msg:room: " + room[0])
+                console.log("socket:msg:userPlayer: " + userPlayer[0])
                 if (data.timeTaken !== 0) {
                     userPlayer[0].points += Math.round((200 / data.timeTaken) * 10)
                 }
