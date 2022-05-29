@@ -224,8 +224,8 @@ io.on('connection', (socket) => {
     // })
 
     // Clear screen
-    socket.on('start-game', (roomName) => {
-        io.to(roomName).emit('start-game', '')
+    socket.on('start-game', async (name) => {
+        io.to(name).emit('start-game', '')
     })
 
     socket.on('update-score', async (name) => {
