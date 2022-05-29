@@ -9,11 +9,29 @@ router.post('/check', async (req, res) => {
         const existingRoom = await Room.findOne({ name: roomName })
         //console.log(existingRoom)
         if (existingRoom) {
-            if (existingRoom['isJoin'] == true) {
-                res.status(200).json({ success: true, msg: 'room is exist' })
-            } else {
-                res.status(202).json({ success: true, msg: 'room is exist, but full' })
+            var roomCreatedData = existingRoom['createdAt']
+            roomCreatedData.setHours(roomCreatedData.getHours() + 1)
+            var currentDateTime = new Date()
+            if (currentDateTime > roomCreatedData) {
+                console.log('currentDateTime greater than roomCreatedData')
+                const deleteRoom = await Room.deleteOne({ existingRoom });
+                console.log(deleteRoom)
+                if (deleteRoom['deletedCount'] == 1) {
+                    //we send 404 because we deleted the room
+                    res.status(404).json({ success: false, msg: 'room not exist' })
+                } else {
+                    res.status(200).json({ success: true, msg: 'room is exist' })
+                }
             }
+            else {
+                console.log('currentDateTime less than roomCreatedData')
+                if (existingRoom['isJoin'] == true) {
+                    res.status(200).json({ success: true, msg: 'room is exist' })
+                } else {
+                    res.status(202).json({ success: true, msg: 'room is exist, but full' })
+                }
+            }
+
         } else {
             res.status(404).json({ success: false, msg: 'room not exist' })
             //return;

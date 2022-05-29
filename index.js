@@ -223,6 +223,11 @@ io.on('connection', (socket) => {
     //     }
     // })
 
+    // Clear screen
+    socket.on('start-game', (roomName) => {
+        io.to(roomName).emit('start-game', '')
+    })
+
     socket.on('update-score', async (name) => {
         try {
             const room = await Room.findOne({ name })
