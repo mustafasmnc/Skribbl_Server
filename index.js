@@ -131,12 +131,12 @@ io.on('connection', (socket) => {
                     (player) => player.nickname === data.username
                 )
                 //let userPlayer =await room.players.find({ nickname: data.username })
-                console.log("socket:msg:data:username: " + data.username)
+                //console.log("socket:msg:data:username: " + data.username)
                 // console.log("socket:msg:data:msg: " + data.msg)
                 // console.log("socket:msg:data:word: " + data.word)
                 // console.log("socket:msg:data:socketId: " + data.socketId)
-                console.log("socket:msg:room: " + room[0])
-                console.log("socket:msg:userPlayer: " + userPlayer[0])
+                //console.log("socket:msg:room: " + room[0])
+                //console.log("socket:msg:userPlayer: " + userPlayer[0])
                 if (data.timeTaken !== 0) {
                     userPlayer[0].points += Math.round((200 / data.timeTaken) * 10)
                 }
@@ -169,6 +169,8 @@ io.on('connection', (socket) => {
             if (idx + 1 === room.players.length) {
                 room.currentRound += 1
             }
+            console.log("socket:turn:idx: " + idx)
+            console.log("socket:turn:currentRound: " + room.currentRound)
             if (room.currentRound <= room.maxRounds) {
                 //const word = getWord()
                 var word = ''
@@ -186,6 +188,7 @@ io.on('connection', (socket) => {
                 }
                 room.word = word
                 room.turnIndex = (idx + 1) % room.players.length
+                console.log("socket:turn:turnIndex: " + room.turnIndex)
                 room.turn = room.players[room.turnIndex]
                 room = await room.save();
                 io.to(name).emit('change-turn', room)
