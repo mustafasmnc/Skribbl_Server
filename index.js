@@ -191,7 +191,7 @@ io.on('connection', (socket) => {
                 console.log("socket:turn:turnIndex: " + room.turnIndex)
                 room.turn = room.players[room.turnIndex]
                 room = await room.save();
-                io.to(name).emit('change-turn', room)
+                io.to(name).emit('change-player-turn', room)
             } else {
                 io.to(name).emit('show-leaderboard', room.players)
             }
