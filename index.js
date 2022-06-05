@@ -272,7 +272,8 @@ io.on('connection', (socket) => {
             }
             room.isJoin = true
             room = await room.save()
-            if (room.players.length < 1) {
+            if (room.players.length <= 1) {
+                socket.broadcast.to(room.name).emit('show-leaderboard', room.players)
                 const deleteRoom = await Room.deleteOne({ name: room['name'] });
                 //console.log(deleteRoom)
                 if (deleteRoom['deletedCount'] == 1) {
@@ -283,9 +284,10 @@ io.on('connection', (socket) => {
                     //res.status(409).json({ success: false, msg: 'room not deleted' })
                 }
             }
-            if (room.players.length === 1) {
-                socket.broadcast.to(room.name).emit('show-leaderboard', room.players)
-            } else {
+            // if (room.players.length === 1) {
+            //     socket.broadcast.to(room.name).emit('show-leaderboard', room.players)
+            // } 
+            else {
                 socket.broadcast.to(room.name).emit('user-disconnected', room)
             }
         } catch (err) {
