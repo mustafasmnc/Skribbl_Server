@@ -123,7 +123,7 @@ io.on('connection', (socket) => {
     })
 
     //chat socket
-    socket.on('msg', async (data) => {
+    socket.on('server-msg', async (data) => {
         try {
             if (data.msg === data.word) {
                 let room = await Room.find({ name: data.roomName })
