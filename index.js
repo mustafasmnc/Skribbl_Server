@@ -136,7 +136,7 @@ io.on('connection', (socket) => {
                 // console.log("socket:msg:data:word: " + data.word)
                 // console.log("socket:msg:data:socketId: " + data.socketId)
                 //console.log("socket:msg:room: " + room[0])
-                //console.log("socket:msg:userPlayer: " + userPlayer[0])
+                console.log("socket:msg:userPlayer: " + userPlayer[0])
                 if (data.timeTaken !== 0) {
                     userPlayer[0].points += Math.round((200 / data.timeTaken) * 10)
                 }
@@ -144,7 +144,7 @@ io.on('connection', (socket) => {
                 io.to(data.roomName).emit('msg', {
                     username: data.username,
                     socketId: socket.id,
-                    msg: 'guessed it',
+                    msg: 'has guessed the word',
                     guessedUserCtr: data.guessedUserCtr + 1,
                 })
                 socket.emit('close-input', '')
@@ -169,9 +169,9 @@ io.on('connection', (socket) => {
             if (idx + 1 === room.players.length) {
                 room.currentRound += 1
             }
-            console.log("-------------------------")
-            console.log("socket:turn:idx: " + idx)
-            console.log("socket:turn:currentRound: " + room.currentRound)
+            // console.log("-------------------------")
+            // console.log("socket:turn:idx: " + idx)
+            // console.log("socket:turn:currentRound: " + room.currentRound)
             if (room.currentRound <= room.maxRounds) {
                 //const word = getWord()
                 var word = ''
@@ -189,7 +189,7 @@ io.on('connection', (socket) => {
                 }
                 room.word = word
                 room.turnIndex = (idx + 1) % room.players.length
-                console.log("socket:turn:turnIndex: " + (idx + 1) % room.players.length)
+                //console.log("socket:turn:turnIndex: " + (idx + 1) % room.players.length)
                 room.turn = room.players[room.turnIndex]
                 room = await room.save();
                 io.to(name).emit('change-player-turn', room)
